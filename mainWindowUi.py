@@ -27,7 +27,7 @@ class Ui_MainWindow( object ):
 		self.songList.setSelectionMode( QtWidgets.QAbstractItemView.ExtendedSelection )
 
 		self.songList.setObjectName( "songList" )
-		self.songList.setStyleSheet( 'background-color:"#4B4B4B"' )
+		self.songList.setStyleSheet( 'background-color:"#323232"' )
 		self.verticalLayout.addWidget( self.songList )
 		self.verticalLayout.setContentsMargins( 0, 0, 0, 0 )
 		MainWindow.setCentralWidget( self.centralwidget )
@@ -56,9 +56,11 @@ class Ui_MainWindow( object ):
 		self.tokenLabel = QtWidgets.QLabel( MainWindow )
 		self.tokenLabel.setText( '' )
 		self.tokenLabel.setAlignment( QtCore.Qt.AlignBottom )
-		# spacer = QtWidgets.QSpacerItem( 0, 10 )
-		# self.verticalLayout.addItem( spacer )
+		spacer = QtWidgets.QSpacerItem( 0, 12 )
+		self.verticalLayout.addItem( spacer )
 		self.verticalLayout.addWidget( self.tokenLabel )
+		spacer = QtWidgets.QSpacerItem( 0, 8 )
+		self.verticalLayout.addItem( spacer )
 		self.verticalLayout.setSpacing( 0 )
 
 		self.retranslateUi( MainWindow )
@@ -129,15 +131,18 @@ class SongItemDelegate( QtWidgets.QItemDelegate ):
 		data = song.currentItem()
 		painter.setRenderHint( QtGui.QPainter.Antialiasing, True )
 		rect = option.rect
+		# print rect
 		if option.state & QtWidgets.QStyle.State_Selected:
-			painter.fillRect( rect, QtGui.QBrush( QtGui.QColor( '#1E68D7' ) ) )
+			painter.fillRect( rect, QtGui.QBrush( QtGui.QColor( '#4A4A4A' ) ) )
 		if data.image.data is None:
 			image = WebImage( data.image.url )
 			data.image.data = image.qimage()
 		imageRect = QtCore.QRect( rect.left(), rect.top(), data.image.width, data.image.height )
 		painter.drawImage( imageRect, data.image.data, data.image.data.rect() )
-		rect.adjust( imageRect.width() + 4, 0, 0, 0 )
-		painter.drawText( rect, QtCore.Qt.AlignVCenter, data.name )
+		textRect = rect.adjusted( imageRect.width() + 4, 0, 0, 0 )
+		painter.drawText( textRect, QtCore.Qt.AlignVCenter, data.name )
+		lineRect = QtCore.QRect( imageRect.topLeft(), QtCore.QSize( rect.width(), 2 ) )
+		painter.fillRect( lineRect, QtGui.QColor( '#202020' ) )
 
 	def sizeHint( self, option, index ):
 		size = super( SongItemDelegate, self ).sizeHint( option, index )
