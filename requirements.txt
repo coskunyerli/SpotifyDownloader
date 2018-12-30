@@ -1,0 +1,2 @@
+Pyside2
+youtube_dl
