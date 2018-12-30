@@ -9,4 +9,4 @@
  - PySide2
  - youtube-dl
  - ffmpeg (for youtube_dl)
- - Qt5 (at Qt 5.15 there has error)
+ - Qt5 (at Qt 5.12 there has error)
