@@ -37,7 +37,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 							self.update.emit((songName, i * step))
 							items = self.searchSongs(songName)
 							if items:
-								songsList = Songs(list(map(lambda item: self.__createSong(item), items)))
+								songsList = Songs(list(map(lambda item: self.__createSong(item), items)), url)
 								self.successful.emit(songsList)
 						else:
 							self.failed.emit(f'Search music is failed. Exception is song name is invalid {songInDict}')
@@ -48,7 +48,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 					self.update.emit((songName, i * step))
 					items = self.searchSongs(songName)
 					if items:
-						songsList = Songs(list(map(lambda item: self.__createSong(item), items)))
+						songsList = Songs(list(map(lambda item: self.__createSong(item), items)), url)
 						self.successful.emit(songsList)
 		except Exception as e:
 			self.failed.emit(f'Search music is failed. Exception is {str(e)}')

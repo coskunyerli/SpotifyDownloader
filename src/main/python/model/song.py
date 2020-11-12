@@ -17,9 +17,10 @@ class Song(object):
 
 
 class Songs(object):
-	def __init__(self, arr):
+	def __init__(self, arr, url):
 		self.songs = arr
 		self.currentIndex = 0
+		self.__url = url
 
 
 	def currentItem(self):
@@ -32,3 +33,13 @@ class Songs(object):
 
 	def __repr__(self):
 		return self.__str__()
+
+
+	def __eq__(self, other):
+		if isinstance(other, Songs) and other.__url == self.__url:
+			return True
+		else:
+			return False
+
+	def getUrl(self):
+		return self.__url
