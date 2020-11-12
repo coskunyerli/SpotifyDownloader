@@ -3,6 +3,7 @@ from mainWindowUi import Ui_MainWindow
 from model.runnable.searchMusicRunnable import SearchMusicRunnable
 from model.runnable.downloadMusicRunnable import DownloadMusicRunnable
 from model.itemModels.songListModel import SongListModel
+from widgets.toast import Toast
 
 
 class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
@@ -97,6 +98,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 
 		def searchMusicFailed(str):
+			Toast.error('Search Music Error', '')
 			print(str)
 
 
