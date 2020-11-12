@@ -18,6 +18,8 @@ class SongListModel(QtCore.QAbstractListModel):
 		item = self.songList[index.row()]
 		if role == QtCore.Qt.DisplayRole:
 			return item.currentItem()
+		elif role == QtCore.Qt.UserRole:
+			return item
 
 
 	def flags(self, index):
@@ -25,11 +27,41 @@ class SongListModel(QtCore.QAbstractListModel):
 
 
 	def extendList(self, list_):
-		self.beginResetModel()
-		self.songList.extend(list_)
-		self.endResetModel()
+		notInItemList = []
+		for item in list_:
+			if item not in self.songList:
+				notInItemList.append(item)
+		if notInItemList:
+			self.beginResetModel()
+			self.songList.extend(notInItemList)
+			self.endResetModel()
+
+
+	def contains(self, function):
+		for item in self.songList:
+			if function(item):
+				return True
+		return False
 
 
 	def index(self, row, col = 0, parent = QtCore.QModelIndex()):
 		data = self.songList[row]
 		return self.createIndex(row, col, data)
+
+
+	def deleteRows(self, indexes):
+		if indexes:
+			try:
+				minIndex = min(indexes, key = lambda i: i.row())
+				maxIndex = max(indexes, key = lambda i: i.row())
+				self.beginRemoveRows(QtCore.QModelIndex(), minIndex.row(), maxIndex.row())
+				for index in indexes:
+					item = index.data(QtCore.Qt.UserRole)
+					self.songList.remove(item)
+				self.endRemoveRows()
+				return True
+			except Exception as e:
+				print(e)
+				return False
+		else:
+			return False
