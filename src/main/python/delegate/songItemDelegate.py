@@ -1,5 +1,4 @@
 from PySide2 import QtWidgets, QtCore, QtGui
-from model.webImage import WebImage
 
 
 class SongItemDelegate(QtWidgets.QItemDelegate):
