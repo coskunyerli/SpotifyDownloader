@@ -2,10 +2,11 @@ from model.image import Image
 
 
 class Song(object):
-	def __init__(self, id, name, imageUrl):
+	def __init__(self, id, name, imageUrl, duration):
 		self.id = id
 		self.name = name
 		self.image = Image(imageUrl)
+		self.duration = duration
 
 
 	def __str__(self):
@@ -40,6 +41,7 @@ class Songs(object):
 			return True
 		else:
 			return False
+
 
 	def getUrl(self):
 		return self.__url

@@ -14,12 +14,19 @@ class SongItemDelegate(QtWidgets.QItemDelegate):
 		rect = option.rect
 		# print rect
 		if option.state & QtWidgets.QStyle.State_Selected:
-			painter.fillRect(rect, QtGui.QBrush(QtGui.QColor('#4A4A4A')))
+			painter.fillRect(rect, QtGui.QBrush(QtGui.QColor('#454545')))
+		else:
+			painter.fillRect(rect, QtGui.QBrush(QtGui.QColor('#303030')))
 
 		imageRect = QtCore.QRect(rect.left(), rect.top(), self.__imageSize.width(), self.__imageSize.height())
 		painter.drawImage(imageRect, currentSong.image.data, currentSong.image.data.rect())
 		textRect = rect.adjusted(imageRect.width() + 4, 0, 0, 0)
 		painter.drawText(textRect, QtCore.Qt.AlignVCenter, currentSong.name)
+
+		durationWidth = painter.fontMetrics().width(song.currentItem().duration)
+		durationRect = QtCore.QRect(rect.right() - (durationWidth + 8), rect.top(), durationWidth, rect.height())
+		painter.drawText(durationRect, QtCore.Qt.AlignVCenter, song.currentItem().duration)
+
 		lineRect = QtCore.QRect(imageRect.topLeft(), QtCore.QSize(rect.width(), 2))
 		painter.fillRect(lineRect, QtGui.QColor('#202020'))
 
@@ -33,7 +40,7 @@ class SongItemDelegate(QtWidgets.QItemDelegate):
 	def createEditor(self, parent, option, index):
 		comboBox = QtWidgets.QComboBox(parent)
 		song = index.internalPointer()
-		comboBox.addItems(list(map(lambda item: item.name, song.songs)))
+		comboBox.addItems(list(map(lambda item: f'{item.name}    {item.duration}', song.songs)))
 		return comboBox
 
 
