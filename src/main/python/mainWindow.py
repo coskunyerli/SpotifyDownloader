@@ -1,3 +1,4 @@
+import log
 from PySide2 import QtGui, QtCore, QtWidgets
 from mainWindowUi import Ui_MainWindow
 from model.runnable.searchMusicRunnable import SearchMusicRunnable
@@ -11,7 +12,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 		super(MainWindow, self).__init__(parent)
 		self.setupUi(self)
 		self.key = None
-		self.songsList = []  # , 'Wonderwall - Oasis', 'You Give Love A Bad Name - Bon Jovi'
+		self.songsList = []
 		self.outputFolder = '.'
 		self.songModel = SongListModel()
 
@@ -47,7 +48,8 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 
 		def downloadMusicFailed(str):
-			print(str)
+			Toast.error('Download Music Error', 'Music is not download successfully. Please try again!')
+			log.error(str)
 
 
 		def finishedProgress():
@@ -57,6 +59,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 		def downloadSuccessful():
 			progressDialog.setValue(100)
+			log.info('Selected musics are downloaded successfully')
 
 
 		def updateProgressBar(result):
@@ -95,11 +98,12 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 		def searchMusicSuccessful(songsList):
 			self.songModel.extendList([songsList])
+			log.info(f'Search is done successfully. {searchedSongList}')
 
 
 		def searchMusicFailed(str):
 			Toast.error('Search Music Error', '')
-			print(str)
+			log.error(str)
 
 
 		def searchMusicUpdate(result):
@@ -134,7 +138,9 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 				songList = text.split('\n')
 				self.searchSongs(songList)
 				file_.close()
-			except:
+			except Exception as e:
+				log.error(f'Song file is not loaded successfully. Exception is {e}')
+				Toast.error('Song File Loading Error', 'Song file is not loaded successfully')
 				file_.close()
 
 
@@ -144,15 +150,21 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 
 	def readSetting(self):
-		setting = QtCore.QSettings('settings.ini', QtCore.QSettings.NativeFormat)
-		self.outputFolder = setting.value('output', '.')
-		size = setting.value('size', QtCore.QSize(600, 400))
-		self.resize(size)
+		try:
+			setting = QtCore.QSettings('settings.ini', QtCore.QSettings.NativeFormat)
+			self.outputFolder = setting.value('output', '.')
+			size = setting.value('size', QtCore.QSize(600, 400))
+			self.resize(size)
+		except Exception as e:
+			log.warning(f'Read setting is not executed successfully. Exception is {e}')
 
 
 	def saveSetting(self):
-		setting = QtCore.QSettings('settings.ini', QtCore.QSettings.NativeFormat)
-		if self.key is not None:
-			setting.setValue('key', self.key)
-		setting.setValue('output', self.outputFolder)
-		setting.setValue('size', self.size())
+		try:
+			setting = QtCore.QSettings('settings.ini', QtCore.QSettings.NativeFormat)
+			if self.key is not None:
+				setting.setValue('key', self.key)
+			setting.setValue('output', self.outputFolder)
+			setting.setValue('size', self.size())
+		except Exception as e:
+			log.warning(f'Save setting is not executed successfully. Exception is {e}')

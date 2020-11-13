@@ -73,7 +73,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 		else:
 			imageUrl = ''
 
-		return Song(songInDict['id'], songInDict['title'], imageUrl)
+		return Song(songInDict['id'], songInDict['title'], imageUrl, songInDict['duration'])
 
 
 	def getSongListInDict(self, url):

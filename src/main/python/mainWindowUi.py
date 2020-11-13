@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
 		self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
 		self.verticalLayout.setObjectName("verticalLayout")
 		self.songList = DragDropListView(self.centralwidget)
-		self.songList.setStyleSheet('background-color:#252525')
+		self.songList.setStyleSheet('background-color:#202020')
 
 
 

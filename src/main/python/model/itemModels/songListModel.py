@@ -1,3 +1,4 @@
+import log
 from PySide2 import QtCore
 
 
@@ -61,7 +62,7 @@ class SongListModel(QtCore.QAbstractListModel):
 				self.endRemoveRows()
 				return True
 			except Exception as e:
-				print(e)
+				log.error(f'Song item is not deleted successfully from model. Exception is {e}')
 				return False
 		else:
 			return False
