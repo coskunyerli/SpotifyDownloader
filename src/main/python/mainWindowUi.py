@@ -23,8 +23,6 @@ class Ui_MainWindow(object):
 		self.songList = DragDropListView(self.centralwidget)
 		self.songList.setStyleSheet('background-color:#202020')
 
-
-
 		delegate1 = SongItemDelegate(self.songList)
 		self.songList.setItemDelegate(delegate1)
 		self.songList.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
@@ -38,11 +36,17 @@ class Ui_MainWindow(object):
 		self.menubar.addMenu(menu)
 		self.loadFileAction = QtWidgets.QAction(MainWindow)
 		self.loadFileAction.setText('Load Song From File')
-		self.loadFileAction.setShortcut(QtGui.QKeySequence(QtCore.Qt.Key_O))
+		self.loadFileAction.setShortcut(QtGui.QKeySequence('CTRL+O'))
 		menu.addAction(self.loadFileAction)
+
+		self.newSongAddAction = QtWidgets.QAction(MainWindow)
+		self.newSongAddAction.setText('Add New Song')
+		self.newSongAddAction.setShortcut(QtGui.QKeySequence('CTRL+N'))
+		menu.addAction(self.newSongAddAction)
 
 		self.outputFolderAction = QtWidgets.QAction(MainWindow)
 		self.outputFolderAction.setText('Change Output Folder')
+		# self.outputFolderAction.setShortcut(QtGui.QKeySequence('CTRL+C'))
 		menu.addAction(self.outputFolderAction)
 		self.menubar.setObjectName("menubar")
 		MainWindow.setMenuBar(self.menubar)

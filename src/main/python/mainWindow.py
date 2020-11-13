@@ -31,6 +31,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 		self.songList.dropped.connect(self.searchSongs)
 		self.downloadButton.clicked.connect(self.startDownload)
 		self.loadFileAction.triggered.connect(self.loadFromFile)
+		self.newSongAddAction.triggered.connect(self.addNewSong)
 		self.outputFolderAction.triggered.connect(self.changeOutputFolder)
 
 
@@ -142,6 +143,17 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 				log.error(f'Song file is not loaded successfully. Exception is {e}')
 				Toast.error('Song File Loading Error', 'Song file is not loaded successfully')
 				file_.close()
+
+
+	def addNewSong(self):
+		text, res = QtWidgets.QInputDialog.getText(self, 'Search Song', 'Enter a title for song',
+												   QtWidgets.QLineEdit.Normal)
+		if text and res:
+			try:
+				self.searchSongs([text])
+			except Exception as e:
+				log.error(f'Song is not added successfully. Exception is {e}')
+				Toast.error('Song Add Error', 'Song is not added successfully')
 
 
 	def closeEvent(self, event):
