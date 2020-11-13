@@ -1,5 +1,5 @@
 import log
-from PySide2 import QtWidgets, QtCore
+import PySide2.QtWidgets as QtWidgets, PySide2.QtCore as QtCore, PySide2.QtGui as QtGui
 from widgets.toast import Toast
 
 
@@ -20,7 +20,8 @@ class DragDropListView(QtWidgets.QListView):
 
 	def initShortcuts(self):
 		self.deleteItemShotcut = QtWidgets.QShortcut(self)
-		self.deleteItemShotcut.activated.connect(self.__deleteSelectedItems)
+		self.deleteItemShotcut.activated.connect(self.deleteSelectedItems)
+		self.deleteItemShotcut.setKey(QtGui.QKeySequence.Delete)
 
 
 	def dropEvent(self, event):
@@ -51,9 +52,8 @@ class DragDropListView(QtWidgets.QListView):
 		delete = contextMenu.addAction('Remove')
 
 		action = contextMenu.exec_(globalPos)
-		if self.selectedIndexes():
-			if action == delete:
-				self.__deleteSelectedItems(self.selectedIndexes())
+		if action == delete:
+			self.deleteSelectedItems()
 
 
 	def __deleteSelectedItems(self, indexes):
@@ -64,3 +64,8 @@ class DragDropListView(QtWidgets.QListView):
 			result = model.deleteRows(indexes)
 			if result is False:
 				Toast.error('Delete Song Item Error', 'Song is not deleted successfully')
+
+
+	def deleteSelectedItems(self):
+		if self.selectedIndexes():
+			self.__deleteSelectedItems(self.selectedIndexes())
