@@ -14,14 +14,38 @@ class DragDropListView(QtWidgets.QListView):
 		self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
 		self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 		self.customContextMenuRequested.connect(self.__showContextMenu)
-
 		self.initShortcuts()
+		self.label = QtWidgets.QLabel(self)
+		self.label.setText('DROP SPOTIFY ITEMS HERE')
+		self.label.setAlignment(QtCore.Qt.AlignCenter)
+		self.label.setStyleSheet('font-size:40pt;color:#444444')
+		self.label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
 
 
 	def initShortcuts(self):
 		self.deleteItemShotcut = QtWidgets.QShortcut(self)
 		self.deleteItemShotcut.activated.connect(self.deleteSelectedItems)
 		self.deleteItemShotcut.setKey(QtGui.QKeySequence.Delete)
+
+
+	def setModel(self, model: QtCore.QAbstractItemModel):
+		super(DragDropListView, self).setModel(model)
+		model.rowsInserted.connect(self.__itemSizeChanged)
+		model.rowsInserted.connect(self.__itemSizeChanged)
+		model.rowsRemoved.connect(self.__itemSizeChanged)
+		model.modelReset.connect(self.__itemSizeChanged)
+
+
+	def __itemSizeChanged(self):
+		if self.model() is not None and self.model().rowCount() > 0:
+			self.label.hide()
+		else:
+			self.label.show()
+
+
+	def resizeEvent(self, event):
+		super(DragDropListView, self).resizeEvent(event)
+		self.label.setGeometry(QtCore.QRect(QtCore.QPoint(0, 0), event.size()))
 
 
 	def dropEvent(self, event):
