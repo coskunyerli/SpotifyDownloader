@@ -103,7 +103,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 
 		def searchMusicFailed(str):
-			Toast.error('Search Music Error', '')
+			Toast.error('Search Music Error', 'Music is not searched successfully')
 			log.error(str)
 
 

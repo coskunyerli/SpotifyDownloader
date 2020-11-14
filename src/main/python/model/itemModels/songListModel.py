@@ -53,12 +53,12 @@ class SongListModel(QtCore.QAbstractListModel):
 	def deleteRows(self, indexes):
 		if indexes:
 			try:
+				songItems = list(map(lambda i: i.data(QtCore.Qt.UserRole), indexes))
 				minIndex = min(indexes, key = lambda i: i.row())
 				maxIndex = max(indexes, key = lambda i: i.row())
 				self.beginRemoveRows(QtCore.QModelIndex(), minIndex.row(), maxIndex.row())
-				for index in indexes:
-					item = index.data(QtCore.Qt.UserRole)
-					self.songList.remove(item)
+				for songItem in songItems:
+					self.songList.remove(songItem)
 				self.endRemoveRows()
 				return True
 			except Exception as e:
