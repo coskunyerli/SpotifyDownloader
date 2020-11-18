@@ -28,6 +28,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 		step = 100.0 / lenght
 		try:
 			for i in range(len(self.__urls)):
+
 				url = self.__urls[i]
 				if static.is_url(url):
 					songInDict = self.getSongListInDict(url)
@@ -38,6 +39,9 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 							items = self.searchSongs(songName)
 							if items:
 								songsList = Songs(list(map(lambda item: self.__createSong(item), items)), url)
+								if self.__stopSignal.isStopped():
+									return
+
 								self.successful.emit(songsList)
 						else:
 							self.failed.emit(f'Search music is failed. Exception is song name is invalid {songInDict}')
@@ -49,6 +53,8 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 					items = self.searchSongs(songName)
 					if items:
 						songsList = Songs(list(map(lambda item: self.__createSong(item), items)), url)
+						if self.__stopSignal.isStopped():
+							return
 						self.successful.emit(songsList)
 		except Exception as e:
 			self.failed.emit(f'Search music is failed. Exception is {str(e)}')
@@ -104,3 +110,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 			return f'{songName} - {artistsInString}'
 		except Exception as e:
 			return None
+
+
+	def stop(self):
+		self.__stopSignal.stop(True)
