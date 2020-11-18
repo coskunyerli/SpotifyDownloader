@@ -1,0 +1,2 @@
+- Style sorunları var edit combobox mesela
+- edit için tek click ile ilgili iyileştirmeler yapılabilir
