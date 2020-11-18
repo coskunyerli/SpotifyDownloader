@@ -1,0 +1,151 @@
+#centralwidget{
+    background-color:rgb(50,50,50);
+}
+
+QDialog{
+    background-color:rgb(50,50,50);
+}
+
+QDialog QLabel{
+    color:#dddddd;
+}
+QComboBox::item{
+    color:#dddddd;
+}
+
+#downloadButton{
+	padding:2px;
+    background-color:rgb(90,90,90);
+    border: 1px solid rgb(51, 51, 51);
+    qproperty-icon: none;
+    color:#dddddd;
+
+}
+
+
+#downloadButton:focus{
+	background-color:rgb(75, 75, 75);
+	outline: none;
+}
+
+#downloadButton:pressed{
+	background-color:rgb(75, 75, 75);
+}
+
+QScrollBar:vertical {
+	/*border-left: 3px solid rgb(0, 200, 150);*/
+	background-color: transparent;
+	width: 6px;
+}
+
+QScrollBar::handle:vertical {
+	min-height: 16px;
+	border: 0px;
+	background-color: rgb(120, 120, 120);
+	border-radius: 3px;
+
+}
+
+QScrollBar::add-line:vertical {
+	/*border-left: 3px solid rgb(0, 200, 150);*/
+	background-color: transparent;
+    height: 1px;
+    subcontrol-position: add;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+	/*border-left: 3px solid rgb(0, 200, 150);*/
+	background-color: transparent;
+    height: 1px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::up-arrow:vertical{
+	width: 24px;
+	height: 24px;
+}
+
+QScrollBar::down-arrow:vertical{
+	width: 24px;
+	height: 24px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+
+QScrollBar:horizontal {
+	/*border-left: 3px solid rgb(0, 200, 150);*/
+	background-color: transparent;
+	height: 6px;
+}
+
+QScrollBar::handle:horizontal {
+	min-width: 16px;
+	border: 0px;
+	background-color: rgb(120, 120, 120);
+	border-radius: 3px;
+
+}
+
+QScrollBar::add-line:horizontal {
+	/*border-left: 3px solid rgb(0, 200, 150);*/
+	background-color: transparent;
+    width: 1px;
+    subcontrol-position: add;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal {
+	/*border-left: 3px solid rgb(0, 200, 150);*/
+	background-color: transparent;
+    width: 1px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::up-arrow:horizontal{
+
+	width: 24px;
+	height: 24px;
+}
+
+QScrollBar::down-arrow:horizontal{
+	width: 24px;
+	height: 24px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+	background: none;
+}
+
+ProgressDialog QPushButton{
+    background-color: rgb(76,80,82);
+    border: 1px solid rgb(94, 94, 96);
+    padding-top:2px;
+    padding-bottom:2px;
+    padding-left:8px;
+    padding-right:8px;
+    border-radius:4px;
+    color:#dddddd;
+}
+
+ProgressDialog QPushButton:pressed{
+    background-color: rgb(62,66,68);
+}
+ProgressDialog QPushButton:focus{
+	background-color:rgb(75, 75, 75);
+	outline: none;
+}
+
+ProgressDialog QProgressBar:horizontal {
+    border-radius: 3px;
+    background: rgb(100,100,100);
+}
+
+ProgressDialog QProgressBar::chunk:horizontal {
+    background:rgb(43,103,213);
+    border-radius: 3px;
+}
