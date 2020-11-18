@@ -15,7 +15,7 @@ from widgets.dragDropListView import DragDropListView
 class Ui_MainWindow(object):
 	def setupUi(self, MainWindow):
 		MainWindow.setObjectName("MainWindow")
-		self.centralwidget = QtWidgets.QWidget(MainWindow)
+		self.centralwidget = QtWidgets.QFrame(MainWindow)
 		self.centralwidget.setObjectName("centralwidget")
 
 		self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -30,6 +30,7 @@ class Ui_MainWindow(object):
 		self.songList.setObjectName("songList")
 		self.verticalLayout.addWidget(self.songList)
 		self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+		self.verticalLayout.setSpacing(0)
 		MainWindow.setCentralWidget(self.centralwidget)
 		self.menubar = MainWindow.menuBar()
 		menu = QtWidgets.QMenu('File')
@@ -52,6 +53,7 @@ class Ui_MainWindow(object):
 		MainWindow.setMenuBar(self.menubar)
 
 		self.downloadButton = QtWidgets.QPushButton(MainWindow)
+		self.downloadButton.setObjectName('downloadButton')
 		self.verticalLayout.addWidget(self.downloadButton)
 
 		size = QtCore.QSize(600, 400)
