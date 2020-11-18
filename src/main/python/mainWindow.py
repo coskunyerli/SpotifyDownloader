@@ -4,6 +4,7 @@ from mainWindowUi import Ui_MainWindow
 from model.runnable.searchMusicRunnable import SearchMusicRunnable
 from model.runnable.downloadMusicRunnable import DownloadMusicRunnable
 from model.itemModels.songListModel import SongListModel
+from widgets.dialog.progressDialog import ProgressDialog
 from widgets.toast import Toast
 
 
@@ -84,6 +85,10 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 			progressDialog.open()
 			QtCore.QThreadPool.globalInstance().start(downloadMusicRunnable)
+		else:
+			progressDialog.close()
+			progressDialog.hide()
+			del progressDialog
 
 
 	def changeOutputFolder(self):
@@ -93,7 +98,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 
 	def searchSongs(self, searchedSongList):
-		progressDialog = QtWidgets.QProgressDialog(self)
+		progressDialog = ProgressDialog(self)
 		progressDialog.setWindowTitle('Search Musics')
 
 
@@ -124,6 +129,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 			searchMusicRunnable.failed.connect(searchMusicFailed)
 			searchMusicRunnable.finished.connect(searchMusicFinished)
 			searchMusicRunnable.update.connect(searchMusicUpdate)
+			progressDialog.canceled.connect(lambda: searchMusicRunnable.stop())
 			progressDialog.open()
 
 			QtCore.QThreadPool.globalInstance().start(searchMusicRunnable)
@@ -163,7 +169,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 	def readSetting(self):
 		try:
-			setting = QtCore.QSettings('settings.ini', QtCore.QSettings.NativeFormat)
+			setting = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, "SpotifyDownloader", "settings")
 			self.outputFolder = setting.value('output', '.')
 			size = setting.value('size', QtCore.QSize(600, 400))
 			self.resize(size)
@@ -173,7 +179,7 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 	def saveSetting(self):
 		try:
-			setting = QtCore.QSettings('settings.ini', QtCore.QSettings.NativeFormat)
+			setting = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, "SpotifyDownloader", "settings")
 			if self.key is not None:
 				setting.setValue('key', self.key)
 			setting.setValue('output', self.outputFolder)
