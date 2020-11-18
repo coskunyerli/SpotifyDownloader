@@ -73,11 +73,18 @@ class DragDropListView(QtWidgets.QListView):
 	def __showContextMenu(self, point):
 		globalPos = self.mapToGlobal(point)
 		contextMenu = QtWidgets.QMenu()
-		delete = contextMenu.addAction('Remove')
+		if self.selectedIndexes():
+			if len(self.selectedIndexes()) == 1:
+				edit = contextMenu.addAction('Edit')
+			else:
+				edit = None
+			delete = contextMenu.addAction('Remove')
 
-		action = contextMenu.exec_(globalPos)
-		if action == delete:
-			self.deleteSelectedItems()
+			action = contextMenu.exec_(globalPos)
+			if action == delete:
+				self.deleteSelectedItems()
+			elif action == edit:
+				self.edit(self.currentIndex())
 
 
 	def __deleteSelectedItems(self, indexes):
