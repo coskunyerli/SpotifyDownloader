@@ -1,7 +1,7 @@
 from PySide2 import QtWidgets, QtCore, QtGui
 
 
-class SongItemDelegate(QtWidgets.QItemDelegate):
+class SongItemDelegate(QtWidgets.QStyledItemDelegate):
 	def __init__(self, parent = None):
 		super(SongItemDelegate, self).__init__(parent)
 		self.__imageSize = QtCore.QSize(160, 90)
@@ -20,7 +20,9 @@ class SongItemDelegate(QtWidgets.QItemDelegate):
 
 		imageRect = QtCore.QRect(rect.left(), rect.top(), self.__imageSize.width(), self.__imageSize.height())
 		painter.drawImage(imageRect, currentSong.image.data, currentSong.image.data.rect())
-		textRect = rect.adjusted(imageRect.width() + 4, 0, 0, 0)
+		painter.save()
+		painter.setPen(QtGui.QColor('#dddddd'))
+		textRect = rect.adjusted(imageRect.width() + 16, 0, 0, 0)
 		painter.drawText(textRect, QtCore.Qt.AlignVCenter, currentSong.name)
 
 		durationWidth = painter.fontMetrics().width(song.currentItem().duration)
@@ -28,6 +30,8 @@ class SongItemDelegate(QtWidgets.QItemDelegate):
 		painter.drawText(durationRect, QtCore.Qt.AlignVCenter, song.currentItem().duration)
 
 		lineRect = QtCore.QRect(imageRect.topLeft(), QtCore.QSize(rect.width(), 2))
+		painter.restore()
+
 		painter.fillRect(lineRect, QtGui.QColor('#202020'))
 
 
@@ -54,6 +58,7 @@ class SongItemDelegate(QtWidgets.QItemDelegate):
 		imageRect = QtCore.QRect(rect.left(), rect.top(), self.__imageSize.width(), self.__imageSize.height())
 		rect.adjust(imageRect.width(), 0, 0, 0)
 		comboBox.setGeometry(rect)
+		comboBox.showPopup()
 
 
 	def setModelData(self, comboBox, model, index):
