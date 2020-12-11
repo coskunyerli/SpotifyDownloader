@@ -21,6 +21,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 		BaseRunnable.__init__(self)
 		self.__stopSignal = StopThreadSignal()
 		self.__urls = urls
+		self.timeout = 30
 
 
 	def run(self):
@@ -63,7 +64,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 
 
 	def search(self, title):
-		results = YoutubeSearch(title, max_results = 5).to_json()
+		results = YoutubeSearch(title, max_results = 5, timeout = self.timeout).to_json()
 		resultsInDict = json.loads(results)
 		return resultsInDict.get('videos', [])
 
@@ -84,7 +85,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 
 	def getSongListInDict(self, url):
 		spotifyInfo = None
-		htmlContent = requests.get(url)
+		htmlContent = requests.get(url, timeout = self.timeout)
 		if htmlContent.status_code == 200:
 			html = htmlContent.text
 			startTagText = 'Spotify.Entity = '

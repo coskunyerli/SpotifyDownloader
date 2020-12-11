@@ -16,15 +16,21 @@ class YoutubeSearch:
 		BASE_URL = "https://youtube.com"
 		url = f"{BASE_URL}/results?search_query={encoded_search}"
 		if self.timeout is not None:
-			response = requests.get(url, timeout = self.timeout).text
+			response = requests.get(url, timeout = self.timeout)
 		else:
-			response = requests.get(url).text
-		while "ytInitialData" not in response:
-			response = requests.get(url).text
-		results = self.parse_html(response)
-		if self.max_results is not None and len(results) > self.max_results:
-			return results[: self.max_results]
-		return results
+			response = requests.get(url)
+
+		if response.status_code == 200:
+			responseText = response.text
+			if "ytInitialData" not in responseText:
+				return []
+			else:
+				results = self.parse_html(response.text)
+				if self.max_results is not None and len(results) > self.max_results:
+					return results[: self.max_results]
+				return results
+		else:
+			return []
 
 
 	def parse_html(self, response):
