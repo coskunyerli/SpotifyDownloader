@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+import traceback
 
 INFO = logging.INFO
 DEBUG = logging.DEBUG
@@ -23,7 +24,9 @@ def warning(msg, name = None, *args, **kwargs):
 		logger = logging.getLogger(name)
 	else:
 		logger = logging.getLogger()
-	logger.warning(msg)
+	tb = traceback.format_exc()
+	if tb is not None:
+		logger.warning(f'{tb}\n{msg}')
 
 
 def info(msg, name = None, *args, **kwargs):
@@ -39,7 +42,9 @@ def error(msg, name = None, *args, **kwargs):
 		logger = logging.getLogger(name)
 	else:
 		logger = logging.getLogger()
-	logger.error(msg)
+	tb = traceback.format_exc()
+	if tb is not None:
+		logger.error(f'{tb}\n{msg}')
 
 
 def critical(msg, name = None, *args, **kwargs):
