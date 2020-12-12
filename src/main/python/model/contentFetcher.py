@@ -50,6 +50,7 @@ class SpotifyFetcher(BaseFetcher):
 	class UrlType:
 		TRACK = 0
 		PLAYLIST = 1
+		ALBUM = 2
 
 
 	def __init__(self, url, timeout):
@@ -70,6 +71,13 @@ class SpotifyFetcher(BaseFetcher):
 			songInDict = self.getSongListInDict()
 			if songInDict is not None:
 				songNameList = self.getSongFromList(songInDict)
+				return songNameList
+			else:
+				return None
+		elif urlType == SpotifyFetcher.UrlType.ALBUM:
+			songInDict = self.getSongListInDict()
+			if songInDict is not None:
+				songNameList = self.getSongFromAlbum(songInDict)
 				return songNameList
 			else:
 				return None
@@ -130,10 +138,29 @@ class SpotifyFetcher(BaseFetcher):
 			return None
 
 
+	def getSongFromAlbum(self, spotifyInfo):
+		if 'tracks' in spotifyInfo:
+			try:
+				songNameList = []
+				playlistInDict = spotifyInfo.get('tracks', {}).get('items', [])
+				for track in playlistInDict:
+					songName = self.getSongNameAndArtistInString(track)
+					if songName is not None and 'uri' in track:
+						songNameList.append((songName, track['uri']))
+				return songNameList
+			except Exception as e:
+				log.error(
+					f'Invalid spotify info while fetching playlist. Exception is {e}. Spotify info is {spotifyInfo}')
+		else:
+			return None
+
+
 	def getUrlType(self):
 		if 'track' in self.url:
 			return SpotifyFetcher.UrlType.TRACK
 		elif 'playlist' in self.url:
 			return SpotifyFetcher.UrlType.PLAYLIST
+		elif 'album' in self.url:
+			return SpotifyFetcher.UrlType.ALBUM
 		else:
 			return None
