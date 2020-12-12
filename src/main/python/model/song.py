@@ -45,3 +45,7 @@ class Songs(object):
 
 	def getUrl(self):
 		return self.__url
+
+
+	def isEmpty(self):
+		return len(self.songs) <= 0
