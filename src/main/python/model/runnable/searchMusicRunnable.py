@@ -1,8 +1,7 @@
 import json
-
 import PySide2.QtCore as QtCore
-import requests
 import static
+from model.contentFetcher import YoutubeFetcher, SpotifyFetcher
 from model.runnable.baseRunnable import BaseRunnable
 from model.song import Song, Songs
 from model.stopThreadSignal import StopThreadSignal
@@ -29,25 +28,21 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 		step = 100.0 / lenght
 		try:
 			for i in range(len(self.__urls)):
-
 				url = self.__urls[i]
 				if static.is_url(url):
-					songInDict = self.getSongListInDict(url)
-					if songInDict is not None:
-						songName = self.getSongNameAndArtistInString(songInDict)
-						if songName is not None:
-							self.update.emit((songName, i * step))
-							items = self.searchSongs(songName)
-							if items:
-								songsList = Songs(list(map(lambda item: self.__createSong(item), items)), url)
-								if self.__stopSignal.isStopped():
-									return
+					songName = self.getSongName(url)
+					if songName is not None:
+						self.update.emit((songName, i * step))
+						items = self.searchSongs(songName)
+						if items:
+							songList = map(lambda item: self.__createSong(item), items)
+							songsList = Songs(list(filter(lambda song: isinstance(song, Song), songList)), url)
+							if self.__stopSignal.isStopped():
+								return
+							self.successful.emit(songsList)
 
-								self.successful.emit(songsList)
-						else:
-							self.failed.emit(f'Search music is failed. Exception is song name is invalid {songInDict}')
 					else:
-						self.failed.emit(f'Search music is failed. Exception is url is invalid {url}')
+						self.failed.emit(f'Search music is failed. Exception is song name is invalid {url}')
 				else:
 					songName = url
 					self.update.emit((songName, i * step))
@@ -79,39 +74,28 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 			imageUrl = songInDict['thumbnails'][0]
 		else:
 			imageUrl = ''
-
-		return Song(songInDict['id'], songInDict['title'], imageUrl, songInDict['duration'])
-
-
-	def getSongListInDict(self, url):
-		spotifyInfo = None
-		htmlContent = requests.get(url, timeout = self.timeout)
-		if htmlContent.status_code == 200:
-			html = htmlContent.text
-			startTagText = 'Spotify.Entity = '
-			endTagText = '</script>'
-			if startTagText in html:
-				startIndex = html.index(startTagText) + len(startTagText)
-				html = html[startIndex:]
-				if endTagText in html:
-					endIndex = html.index(endTagText)
-					html = html[:endIndex]
-					index = html.rfind(';')
-					if index != -1:
-						html = html[:index]
-						spotifyInfo = json.loads(html)
-		return spotifyInfo
+		if 'id' in songInDict and 'title' in songInDict and 'duration' in songInDict and songInDict['duration'] != 0:
+			return Song(songInDict['id'], songInDict['title'], imageUrl, songInDict['duration'])
+		else:
+			return None
 
 
-	def getSongNameAndArtistInString(self, spotifyInfo):
-		songName = spotifyInfo.get('name')
-		artists = spotifyInfo.get('artists', [])
-		try:
-			artistsInString = ' '.join(map(lambda artist: artist['name'], artists))
-			return f'{songName} - {artistsInString}'
-		except Exception as e:
+	def getSongName(self, url):
+		fetcher = self.getContentFetcher(url)
+		if fetcher is not None:
+			return fetcher.fetchContent()
+		else:
 			return None
 
 
 	def stop(self):
 		self.__stopSignal.stop(True)
+
+
+	def getContentFetcher(self, url):
+		if 'www.youtube.com' in url:
+			return YoutubeFetcher(url, self.timeout)
+		elif 'open.spotify.com' in url:
+			return SpotifyFetcher(url, self.timeout)
+		else:
+			return None

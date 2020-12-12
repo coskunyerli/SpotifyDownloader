@@ -1,5 +1,6 @@
 import log
 import PySide2.QtWidgets as QtWidgets, PySide2.QtCore as QtCore, PySide2.QtGui as QtGui
+import static
 from widgets.toast import Toast
 
 
@@ -62,7 +63,11 @@ class DragDropListView(QtWidgets.QListView):
 
 
 	def dragEnterEvent(self, event):
-		if event.mimeData().hasHtml():
+		if event.mimeData().hasText():
+			urls = event.mimeData().text().split('\n')
+			for url in urls:
+				if static.is_url(url) is False:
+					return
 			event.acceptProposedAction()
 
 
