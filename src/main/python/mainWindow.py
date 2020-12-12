@@ -103,8 +103,12 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 
 		def searchMusicSuccessful(songsList):
-			self.songModel.extendList([songsList])
-			log.info(f'Search is done successfully. {searchedSongList}')
+			if songsList.isEmpty() is False:
+				self.songModel.extendList([songsList])
+				log.info(f'Search is done successfully. {searchedSongList}')
+			else:
+				Toast.warning('Invalid Song', 'Searched song is not valid song.')
+				log.warning(f'Searched song is not valid song.Song url is {songsList.getUrl()}')
 
 
 		def searchMusicFailed(str):
@@ -169,7 +173,8 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 	def readSetting(self):
 		try:
-			setting = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, "SpotifyDownloader", "settings")
+			setting = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, "SpotifyDownloader",
+									   "settings")
 			self.outputFolder = setting.value('output', '.')
 			size = setting.value('size', QtCore.QSize(600, 400))
 			self.resize(size)
@@ -179,7 +184,8 @@ class MainWindow(Ui_MainWindow, QtWidgets.QMainWindow):
 
 	def saveSetting(self):
 		try:
-			setting = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, "SpotifyDownloader", "settings")
+			setting = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, "SpotifyDownloader",
+									   "settings")
 			if self.key is not None:
 				setting.setValue('key', self.key)
 			setting.setValue('output', self.outputFolder)
