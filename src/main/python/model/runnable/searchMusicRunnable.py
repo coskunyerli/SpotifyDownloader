@@ -25,33 +25,34 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 
 	def run(self):
 		lenght = len(self.__urls)
-		step = 100.0 / lenght
 		try:
-			for i in range(len(self.__urls)):
-				url = self.__urls[i]
+			i = 0
+			for url in self.__urls:
 				if static.is_url(url):
-					songName = self.getSongName(url)
-					if songName is not None:
-						self.update.emit((songName, i * step))
-						items = self.searchSongs(songName)
-						if items:
-							songList = map(lambda item: self.__createSong(item), items)
-							songsList = Songs(list(filter(lambda song: isinstance(song, Song), songList)), url)
-							if self.__stopSignal.isStopped():
-								return
-							self.successful.emit(songsList)
-
+					songNameList = self.getSongNameList(url)
+					if songNameList is not None:
+						for songName, songUrl in songNameList:
+							self.update.emit((songName, i * 100.0 / (lenght + len(songNameList))))
+							items = self.searchSongs(songName)
+							if items:
+								songList = map(lambda item: self.__createSong(item), items)
+								songsList = Songs(list(filter(lambda song: isinstance(song, Song), songList)), songUrl)
+								if self.__stopSignal.isStopped():
+									return
+								self.successful.emit(songsList)
+							i += 1
 					else:
 						self.failed.emit(f'Search music is failed. Exception is song name is invalid {url}')
 				else:
 					songName = url
-					self.update.emit((songName, i * step))
+					self.update.emit((songName, i * 100.0 / lenght))
 					items = self.searchSongs(songName)
 					if items:
 						songsList = Songs(list(map(lambda item: self.__createSong(item), items)), url)
 						if self.__stopSignal.isStopped():
 							return
 						self.successful.emit(songsList)
+					i += 1
 		except Exception as e:
 			self.failed.emit(f'Search music is failed. Exception is {str(e)}')
 		finally:
@@ -80,7 +81,7 @@ class SearchMusicRunnable(QtCore.QObject, BaseRunnable):
 			return None
 
 
-	def getSongName(self, url):
+	def getSongNameList(self, url):
 		fetcher = self.getContentFetcher(url)
 		if fetcher is not None:
 			return fetcher.fetchContent()
